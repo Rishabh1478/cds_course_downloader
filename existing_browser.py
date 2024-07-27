@@ -73,14 +73,22 @@ def link_grabber():
     subject_index = [subject_Modern_History, physics, subject_indian_geography, subject_Ancient_History, subject_CHEMISTRY, subject_biology, subject_CA, subject_English, subject_bc, subject_psysical]
 
     opt = Options()
+    # opt.add_experimental_option("debuggerAddress", "127.0.0.1:9222") 
     # opt.add_argument("--headless")
+    
     driver = webdriver.Chrome(options=opt)
+    # cookies = driver.get_cookies()
+
+    # with open('cookies1.pkl', 'wb') as file:
+    #     pickle.dump(cookies, file)
     driver.get('https://www.cdsjourney.com/student-dashboard/batch/13/subjects/')
+    # driver.delete_all_cookies()
     cookies = pickle.load(open('cookies.pkl', 'rb'))
     for cookie in cookies:
         driver.add_cookie(cookie)
 
     driver.get('https://www.cdsjourney.com/student-dashboard/batch/13/subjects/')
+    #driver.refresh()
 
     subjects = driver.find_elements(By.XPATH, "//div[contains(@class, 'col-lg-2 col-md-2 mb-4')]")
 
@@ -167,3 +175,4 @@ def link_grabber():
         df = pd.DataFrame(sub)
         df.to_csv(fr"info\{subject_final[numb]}.csv")
         numb += 1
+link_grabber()
