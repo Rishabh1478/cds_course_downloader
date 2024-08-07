@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from pathlib import Path
-from downloader import downloader
+from downloader import main_downloader
 import os
 
 def download_course():
@@ -25,6 +25,6 @@ def download_course():
                 pass
             else:
                 print(f'Downloading classes for {csv_file_name}')
-                downloader(link, csv_file_name.replace('.csv', ''), file_name)
+                main_downloader(link, csv_file_name.replace('.csv', ''), file_name)
             
         
