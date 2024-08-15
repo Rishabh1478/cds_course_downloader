@@ -20,7 +20,7 @@ def download_course():
         else:
             os.makedirs(rf'downloads\{csv_file_name.replace(".csv", "")}')
         for file_name, link in zip(class_name_list, class_link_list):
-            if file_name in f'{list_files_in_folder(f"downloads/{csv_file_name.replace(".csv", "")}")}':
+            if file_name in f'{list_files_in_folder(f"downloads/{csv_file_name.replace(".csv", "")}")} ':
                 print('skipped')
                 pass
             else:

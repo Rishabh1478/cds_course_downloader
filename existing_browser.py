@@ -43,9 +43,6 @@ def link_grabber():
             'class_link': [],
     }
 
-    
-
-    
 
     subject_psysical = {
             'class_names': [],
@@ -116,10 +113,12 @@ def link_grabber():
     ref = 0
     for subject_link in subjects_stored['links']:
         driver.get(subject_link)
-        classes_elements = driver.find_elements(By.XPATH, "//span[contains(@class, 'btn btn-header-link')]")
-        for class_element in classes_elements:
-            class_name = class_element.find_element(By.TAG_NAME, 'p').text.rstrip('None').strip(' ')
-            class_date = class_element.find_element(By.TAG_NAME, "h6").text
+        html_data = driver.page_source
+        soup = BeautifulSoup(html_data, "html.parser")
+        class_elements = soup.find_all("span", {"class": "btn btn-header-link"})
+        for element in class_elements:
+            class_name = element.find('p').text.replace('None', '').replace('\xa0','').strip(' ')
+            class_date = element.find('h6').getText()
             if ref == 0:
                 subject_biology['class_names'].append(class_name)
                 subject_biology['class_date'].append(class_date)
@@ -159,36 +158,34 @@ def link_grabber():
 
         
 
-        classes_links = driver.find_elements(By.XPATH, "//li[contains(@class, 'course-content')]")
+        class_link_elements = soup.find_all("span", {"class": "btn btn-primary btn-sm radius-sm no-animation"})
         
-        for class_link in classes_links:
-            t_class_link = class_link.find_element(By.TAG_NAME, "span").get_attribute('onclick')
-            pattern = r"https:\/\/us06web\.zoom\.us\/rec\/share\/[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+"
-            final_link = re.findall(pattern, t_class_link)
+        for link in class_link_elements:
+            final_link = link.get("onclick").split('\'')[1]
             if ref == 0:
-                subject_biology['class_link'].append(final_link[0])
+                subject_biology['class_link'].append(final_link)
             elif ref == 1:
-                subject_bc['class_link'].append(final_link[0])
+                subject_bc['class_link'].append(final_link)
             elif ref == 2:
-                subject_English['class_link'].append(final_link[0])
+                subject_English['class_link'].append(final_link)
             elif ref == 3:
-                subject_CHEMISTRY['class_link'].append(final_link[0])
+                subject_CHEMISTRY['class_link'].append(final_link)
             elif ref == 4:
-                subject_CA['class_link'].append(final_link[0])
+                subject_CA['class_link'].append(final_link)
             elif ref == 5:
-                subject_psysical['class_link'].append(final_link[0])
+                subject_psysical['class_link'].append(final_link)
             elif ref == 6:
-                subject_Ancient_History['class_link'].append(final_link[0])
+                subject_Ancient_History['class_link'].append(final_link)
             elif ref == 7:
-                subject_indian_geography['class_link'].append(final_link[0])
+                subject_indian_geography['class_link'].append(final_link)
             elif ref == 8:
-                subject_Modern_History['class_link'].append(final_link[0])
+                subject_Modern_History['class_link'].append(final_link)
             elif ref == 9:
-                physics['class_link'].append(final_link[0])
+                physics['class_link'].append(final_link)
             elif ref == 10:
-                afcat_special['class_link'].append(final_link[0])
+                afcat_special['class_link'].append(final_link)
             elif ref == 11:
-                subject_polity['class_link'].append(final_link[0])
+                subject_polity['class_link'].append(final_link)
 
         if ref > len(subject_index):
             break
@@ -200,7 +197,13 @@ def link_grabber():
     subject_final = ['subject_biology', 'subject_bc', 'subject_English', 'subject_CHEMISTRY', 'subject_CA', 'subject_psysical', 'subject_Ancient_History', 'subject_indian_geography', 'subject_Modern_History', 'physics', 'afcat_special', 'subject_polity']
     numb = 0 
     for sub in subject_index:
+        # print(len(sub['class_link']))
+        # print(len(sub['class_names']))
+        # print(len(sub['class_date']))
+        # print("\n\n")
         df = pd.DataFrame(sub)
         df.to_csv(fr"info\{subject_final[numb]}.csv")
         numb += 1
+# link_grabber()
+
 # link_grabber()
